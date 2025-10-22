@@ -6,6 +6,7 @@
   "scripts": {
     "serve": "vite",
     "build": "vite build",
+    "build:spa": "DISABLE_BASE_PATH=true vite build",
     "install:e2e": "pnpm --dir tests/playwright install",
     "test:e2e": "pnpm --dir tests/playwright run test",
     "playwright": "pnpm --dir tests/playwright exec playwright",

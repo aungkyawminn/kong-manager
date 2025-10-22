@@ -2,6 +2,7 @@
   "extends": "@vue/tsconfig/tsconfig.json",
   "compilerOptions": {
     "target": "es2017",
+    "module": "esnext",
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
     "paths": {

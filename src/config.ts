@@ -34,7 +34,8 @@ export const config = {
   },
 
   get ADMIN_API_URL() {
-    const ADMIN_API_URL = getConfig<string | null>('ADMIN_API_URL', null)
+    // const ADMIN_API_URL = getConfig<string | null>('ADMIN_API_URL', null)
+    const ADMIN_API_URL = import.meta.env.VITE_ADMIN_API_URL ?? ''
     if (ADMIN_API_URL) {
       return /^(https?:)?\/\//.test(ADMIN_API_URL)
         ? ADMIN_API_URL

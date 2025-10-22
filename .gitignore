@@ -27,3 +27,4 @@ bundle-analyzer
 
 # suppress build warning
 public/kconfig.js
+.env

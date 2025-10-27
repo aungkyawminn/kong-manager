@@ -12,6 +12,18 @@ class ApiService {
 
   constructor() {
     this.instance = useAxios().axiosInstance
+
+    // Add interceptor to set API key header on all requests
+    this.instance.interceptors.request.use(
+      (config) => {
+        const apiKey = import.meta.env.VITE_API_KEY
+        if (apiKey && config.headers) {
+          config.headers['x-api-key'] = apiKey
+        }
+        return config
+      },
+      (error) => Promise.reject(error),
+    )
   }
 
   getInfo() {

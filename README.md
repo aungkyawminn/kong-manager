@@ -51,7 +51,7 @@ Create a `.env` file in the root directory:
 cp .env.example .env
 ```
 
-Edit `.env` to configure your Kong Admin API URL:
+Edit `.env` to configure your Kong Admin API URL and optional API key:
 
 ```env
 NODE_ENV=production
@@ -62,9 +62,16 @@ NODE_ENV=production
 # VITE_ADMIN_API_URL=https://kong-admin.example.com
 # VITE_ADMIN_API_URL=http://192.168.1.100:8001
 VITE_ADMIN_API_URL=
+
+# Set the X-API-Key header value for authentication
+# Required if your Kong Admin API is behind an ALB/API Gateway with API key auth
+# You can generate a secure key using: openssl rand -base64 48 | tr -d '\n'
+VITE_API_KEY=
 ```
 
-**Important:** If `VITE_ADMIN_API_URL` is not set, the app will default to `http://<current-host>:8001`
+**Important:** 
+- If `VITE_ADMIN_API_URL` is not set, the app will default to `http://<current-host>:8001`
+- If `VITE_API_KEY` is set, it will be sent as an `X-API-Key` header in all API requests
 
 ### 3. Start Development Server
 
@@ -105,23 +112,40 @@ This fork supports the following environment variables:
 | Variable | Description | Default |
 |----------|-------------|----------|
 | `VITE_ADMIN_API_URL` | Kong Admin API URL (e.g., `http://localhost:8001` or `https://kong-admin.example.com`) | Uses current hostname with port 8001 |
+| `VITE_API_KEY` | API key sent as `X-API-Key` header for authentication (optional) | None |
 
 ### Example Configurations
 
-**Local Kong instance:**
+**Local Kong instance (no authentication):**
 ```env
 VITE_ADMIN_API_URL=http://localhost:8001
 ```
 
-**Remote Kong instance:**
+**Remote Kong instance with API key authentication:**
 ```env
 VITE_ADMIN_API_URL=https://kong-admin.example.com
+VITE_API_KEY=your-secure-api-key-here
 ```
 
-**Kong in Docker:**
-```env
-VITE_ADMIN_API_URL=http://192.168.1.100:8001
+### Security Notes
+
+**Generating a Secure API Key:**
+```bash
+# Generate a secure random API key
+openssl rand -base64 48 | tr -d '\n'
 ```
+
+**Important Security Considerations:**
+- Never commit your `.env` file to version control
+- The `.env` file is already in `.gitignore` for your protection
+- Use different API keys for development, staging, and production environments
+- Rotate API keys regularly
+- For production deployments to S3/CDN, configure API keys as environment variables in your CI/CD pipeline
+
+**Common Use Cases:**
+- **AWS ALB/API Gateway:** Use `X-API-Key` header validation rules
+- **Nginx Reverse Proxy:** Configure `proxy_set_header` to validate the key
+- **Kong Gateway Plugin:** Use the `key-auth` plugin on your Admin API
 
 ## Building
 
